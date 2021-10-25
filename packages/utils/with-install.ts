@@ -21,4 +21,3 @@ export const withInstall = <T>(comp: T) => {
    };
    return comp as SFCWithInstall<T>;
  };
- 
