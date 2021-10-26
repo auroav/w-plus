@@ -25,7 +25,7 @@ function compile() {
     .pipe(sass.sync())
     .pipe(autoprefixer())
     .pipe(cleanCss())
-    .pipe(dest("./dist/css"));
+    .pipe(dest("./dist"));
 }
 
 /**
