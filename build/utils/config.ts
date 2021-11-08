@@ -9,7 +9,7 @@ export const buildConfig = {
       path: path.resolve(outDir, "es"),
     },
     bundle: {
-      path: "z-plus/es",
+      path: "w-plus/es",
     },
   },
   cjs: {
@@ -20,7 +20,7 @@ export const buildConfig = {
       path: path.resolve(outDir, "lib"),
     },
     bundle: {
-      path: "z-plus/lib",
+      path: "w-plus/lib",
     },
   },
 };

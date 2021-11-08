@@ -6,8 +6,5 @@
     "build": "gulp"
   },
   "author": "WQ",
-  "license": "ISC",
-  "dependencies": {
-    "element-plus": "^1.1.0-beta.24"
-  }
+  "license": "ISC"
 }

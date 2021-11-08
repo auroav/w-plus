@@ -32,9 +32,8 @@ export const run = async (command: string) => {
 
 // 重写打包后的@w-plus 路径
 export const pathRewriter = (format) => {
-  return (file: string) => {
-    console.log(file);
-    file = file.replace("@w-plus", `w-plus/${format}`);
-    return file;
+  return (id: string) => {
+    id = id.replaceAll("@w-plus", `w-plus/${format}`);
+    return id;
   };
 };

@@ -24,8 +24,13 @@ function compile() {
   return src(path.resolve(__dirname, "./src/*.scss"))
     .pipe(sass.sync())
     .pipe(autoprefixer())
+    .on('data',(data) => {
+        let content = data.contents.toString()
+        content = content.replaceAll('./fonts','w-plus/theme-chalk/fonts')
+        data.contents = new Buffer(content)
+    })
     .pipe(cleanCss())
-    .pipe(dest("./dist"));
+    .pipe(dest("./dist/css"));
 }
 
 /**
@@ -33,7 +38,7 @@ function compile() {
  */
 function copyfont() {
     // 从src下单fonts文件夹下的所有文件开始=>压缩=>最终输出到当前目录下dist下的font目录
-    return src(path.resolve(__dirname,'./src/fonts/**')).pipe(cleanCss()).pipe(dest("./dist/fonts"))
+    return src(path.resolve(__dirname,'./src/fonts/**')).pipe(dest("./dist/fonts"))
 }
 
 /**

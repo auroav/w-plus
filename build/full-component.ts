@@ -1,8 +1,8 @@
 /**
  * 安装依赖 pnpm install rollup @rollup/plugin-node-resolve @rollup/plugin-commonjs rollup-plugin-typescript2 rollup-plugin-vue -D -w
  */
-import { nodeResolve } from "@rollup/plugin-node-resolve";
-import commonjs from "@rollup/plugin-commonjs";
+import { nodeResolve } from "@rollup/plugin-node-resolve";  // 处理文件路径
+import commonjs from "@rollup/plugin-commonjs"; // 将 CommonJS 模块转换为 ES6
 import vue from "rollup-plugin-vue";
 import typescript from "rollup-plugin-typescript2";
 import { parallel } from "gulp";
@@ -45,14 +45,17 @@ const buildFull = async () => {
   let bundle = await rollup(config);
 
   return Promise.all(
-    buildConfig.map((config) => {
-      bundle.write(config as OutputOptions);
+    buildConfig.map((option) => {
+      bundle.write(option as OutputOptions);
     })
   );
 };
 
 async function buildEntry() {
-  const entryFiles = await fs.readdir(wpRoot, { withFileTypes:true });
+  // 读取w-plus目录下的所有内容，包括目录和文件
+  const entryFiles = await fs.readdir(wpRoot, { withFileTypes: true });
+  
+  // 过滤掉 不是文件的内容和package.json文件  index.ts 作为打包入口
   const entryPoints = entryFiles
     .filter((f) => f.isFile())
     .filter((f) => !["package.json"].includes(f.name))

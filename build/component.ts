@@ -52,7 +52,7 @@ const buildEachComponent = async () => {
 
 async function genTypes() {
   const project = new Project({
-    // 生成.d.ts 需要有一个tsconfig
+    // 生成.d.ts 我们需要有一个tsconfig
     compilerOptions: {
       allowJs: true,
       declaration: true,
@@ -70,14 +70,15 @@ async function genTypes() {
     skipAddingFilesFromTsConfig: true,
   });
 
-  // ** 任意目录下 * 任意文件
   const filePaths = await glob("**/*", {
+    // ** 任意目录  * 任意文件
     cwd: compRoot,
     onlyFiles: true,
     absolute: true,
   });
 
   const sourceFiles: SourceFile[] = [];
+
   await Promise.all(
     filePaths.map(async function (file) {
       if (file.endsWith(".vue")) {
@@ -90,18 +91,16 @@ async function genTypes() {
           sourceFiles.push(sourceFile);
         }
       } else {
-        const sourceFile = project.addSourceFileAtPath(file); // 把所有ts文件都转换为.d.ts文件
+        const sourceFile = project.addSourceFileAtPath(file); // 把所有的ts文件都放在一起 发射成.d.ts文件
         sourceFiles.push(sourceFile);
       }
     })
   );
-
   await project.emit({
-    // 默认是放在内存中，
+    // 默认是放到内存中的
     emitOnlyDtsFiles: true,
   });
 
-  // 参考 ts-morph文档
   const tasks = sourceFiles.map(async (sourceFile: any) => {
     const emitOutput = sourceFile.getEmitOutput();
     const tasks = emitOutput.getOutputFiles().map(async (outputFile: any) => {
@@ -109,7 +108,6 @@ async function genTypes() {
       await fs.mkdir(path.dirname(filepath), {
         recursive: true,
       });
-      // @w-plus -> w-plus/es -> .d.ts 肯定不用去lib下查找
       await fs.writeFile(filepath, pathRewriter("es")(outputFile.getText()));
     });
     await Promise.all(tasks);
@@ -128,20 +126,25 @@ function copyTypes() {
 }
 
 async function buildComponentEntry() {
-    const config = {
-        input: path.resolve(compRoot, "index.ts"),
-        plugins: [typescript()],
-        external: () => true,
-    };
-    const bundle = await rollup(config);
-    return Promise.all(
-        Object.values(buildConfig)
-            .map((config) => ({
-                format: config.format,
-                file: path.resolve(config.output.path, "components/index.js"),
-            }))
-            .map((config) => bundle.write(config as OutputOptions))
-    );
+  const config = {
+    input: path.resolve(compRoot, "index.ts"),
+    plugins: [typescript()],
+    external: () => true,
+  };
+  const bundle = await rollup(config);
+  return Promise.all(
+    Object.values(buildConfig)
+      .map((config) => ({
+        format: config.format,
+        file: path.resolve(config.output.path, "components/index.js"),
+      }))
+      .map((config) => bundle.write(config as OutputOptions))
+  );
 }
 
-export const buildComponent = series(buildEachComponent, genTypes, copyTypes(),buildComponentEntry);
+export const buildComponent = series(
+  buildEachComponent,
+  genTypes,
+  copyTypes(),
+  buildComponentEntry
+);

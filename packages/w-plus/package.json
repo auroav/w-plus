@@ -1,6 +1,7 @@
 {
   "name": "w-plus",
   "version": "1.0.0",
+  "private": false,
   "description": "",
   "main": "lib/index.js",
   "module": "es/index.js",

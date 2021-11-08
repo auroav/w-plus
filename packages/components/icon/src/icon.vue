@@ -5,7 +5,6 @@
 </template>
 
 <script lang="ts">
-import { ElButton } from 'element-plus'
 import { computed, defineComponent } from "vue";
 import { iconProps } from "./icon";
 
